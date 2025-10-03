@@ -1,0 +1,19 @@
+@page "/countries/delete/{Id:int}"
+@inject HttpClient Http
+@inject NavigationManager Nav
+
+<h3>Hapus Country</h3>
+
+<p>Apakah Anda yakin ingin menghapus country ini?</p>
+<button @onclick="Delete">Ya</button>
+<button @onclick="() => Nav.NavigateTo("/countries")">Tidak</button>
+
+@code {
+    [Parameter] public int Id { get; set; }
+
+    private async Task Delete()
+    {
+        await Http.DeleteAsync($"api/countries/{Id}");
+        Nav.NavigateTo("/countries");
+    }
+}

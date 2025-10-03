@@ -1,0 +1,19 @@
+@page "/countries/create"
+@inject HttpClient Http
+@inject NavigationManager Nav
+
+<h3>Tambah Country</h3>
+
+<input @bind="country.Name" placeholder="Nama negara" />
+<input @bind="country.Code" placeholder="Kode" />
+<button @onclick="Save">Simpan</button>
+
+@code {
+    private BlazorTodoApp.Models.Country country = new();
+
+    private async Task Save()
+    {
+        await Http.PostAsJsonAsync("api/countries", country);
+        Nav.NavigateTo("/countries");
+    }
+}

@@ -1,0 +1,32 @@
+@page "/todos/edit/{Id:int}"
+@inject HttpClient Http
+@inject NavigationManager Nav
+
+<h3>Edit Todo</h3>
+
+@if (todo == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <input @bind="todo.Title" />
+    <input type="checkbox" @bind="todo.IsDone" /> Done?
+    <button @onclick="Update">Update</button>
+}
+
+@code {
+    [Parameter] public int Id { get; set; }
+    private BlazorTodoApp.Models.Todo? todo;
+
+    protected override async Task OnInitializedAsync()
+    {
+        todo = await Http.GetFromJsonAsync<BlazorTodoApp.Models.Todo>($"api/todos/{Id}");
+    }
+
+    private async Task Update()
+    {
+        await Http.PutAsJsonAsync($"api/todos/{Id}", todo);
+        Nav.NavigateTo("/todos");
+    }
+}

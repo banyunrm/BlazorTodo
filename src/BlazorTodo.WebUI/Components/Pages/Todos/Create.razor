@@ -1,0 +1,18 @@
+@page "/todos/create"
+@inject HttpClient Http
+@inject NavigationManager Nav
+
+<h3>Tambah Todo</h3>
+
+<input @bind="todo.Title" placeholder="Judul todo" />
+<button @onclick="Save">Simpan</button>
+
+@code {
+    private BlazorTodoApp.Models.Todo todo = new();
+
+    private async Task Save()
+    {
+        await Http.PostAsJsonAsync("api/todos", todo);
+        Nav.NavigateTo("/todos");
+    }
+}

@@ -1,0 +1,28 @@
+@page "/countries/details/{Id:int}"
+@inject HttpClient Http
+@inject NavigationManager Nav
+
+<h3>Details Country</h3>
+
+@if (country == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <p><b>ID:</b> @country.Id</p>
+    <p><b>Nama:</b> @country.Name</p>
+    <p><b>Kode:</b> @country.Code</p>
+
+    <a href="/countries">Kembali ke List</a>
+}
+
+@code {
+    [Parameter] public int Id { get; set; }
+    private BlazorTodoApp.Models.Country? country;
+
+    protected override async Task OnInitializedAsync()
+    {
+        country = await Http.GetFromJsonAsync<BlazorTodoApp.Models.Country>($"api/countries/{Id}");
+    }
+}

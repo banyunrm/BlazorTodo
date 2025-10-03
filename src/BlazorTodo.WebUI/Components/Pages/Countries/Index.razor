@@ -1,0 +1,26 @@
+@page "/countries"
+@inject HttpClient Http
+
+<h3>Country List</h3>
+<a href="/countries/create">Tambah Country</a>
+
+<ul>
+    @foreach (var country in countries)
+    {
+        <li>
+            <b>@country.Name</b> (@country.Code)
+            (<a href="/countries/details/@country.Id">Details</a> |
+             <a href="/countries/edit/@country.Id">Edit</a> |
+             <a href="/countries/delete/@country.Id">Delete</a>)
+        </li>
+    }
+</ul>
+
+@code {
+    private List<BlazorTodoApp.Models.Country> countries = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        countries = await Http.GetFromJsonAsync<List<BlazorTodoApp.Models.Country>>("api/countries") ?? new();
+    }
+}

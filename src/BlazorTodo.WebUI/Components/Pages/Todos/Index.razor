@@ -1,0 +1,27 @@
+@page "/todos"
+@inject HttpClient Http
+
+<h3>Todo List</h3>
+<a href="/todos/create">Tambah Todo</a>
+
+<ul>
+    @foreach (var todo in todos)
+    {
+        <li>
+            <input type="checkbox" checked="@todo.IsDone" disabled />
+            @todo.Title
+            (<a href="/todos/details/@todo.Id">Details</a> |
+             <a href="/todos/edit/@todo.Id">Edit</a> |
+             <a href="/todos/delete/@todo.Id">Delete</a>)
+        </li>
+    }
+</ul>
+
+@code {
+    private List<BlazorTodoApp.Models.Todo> todos = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        todos = await Http.GetFromJsonAsync<List<BlazorTodoApp.Models.Todo>>("api/todos") ?? new();
+    }
+}

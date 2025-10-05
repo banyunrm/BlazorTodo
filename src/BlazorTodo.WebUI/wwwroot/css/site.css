@@ -1,0 +1,97 @@
+body {
+    padding-top: 0;
+    background-color: #f8f9fa;
+}
+
+html, body {
+    height: 100%;
+}
+
+#app {
+    height: 100vh;
+}
+
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.25rem;
+}
+
+.nav-link.active {
+    font-weight: bold;
+    color: #fff !important;
+}
+
+.sidebar {
+    background-color: #343a40;
+    min-height: 100vh;
+    color: #fff;
+}
+
+.page {
+    display: flex;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1;
+    padding: 2rem;
+    background: #fff;
+}
+
+.top-row {
+    margin-bottom: 1rem;
+}
+
+.card {
+    margin-bottom: 1rem;
+}
+
+.navbar-toggler {
+    border: none;
+    background: transparent;
+    color: white;
+    cursor: pointer;
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .navbar-toggler {
+        display: block;
+    }
+    
+    .nav-scrollable {
+        display: none;
+    }
+    
+    .navbar-toggler:checked + .nav-scrollable {
+        display: block;
+    }
+}
+
+.nav-scrollable {
+    height: 100vh;
+    overflow-y: auto;
+    background-color: #343a40;
+    padding: 1rem;
+}
+
+.nav {
+    flex-direction: column;
+}
+
+.nav-link {
+    color: #fff;
+    padding: 0.5rem 0;
+    border-radius: 0.25rem;
+    margin-bottom: 0.25rem;
+}
+
+.nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+.nav-link.active {
+    background-color: #007bff;
+    color: #fff;
+}

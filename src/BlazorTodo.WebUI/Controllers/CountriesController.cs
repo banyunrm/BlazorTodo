@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using BlazorTodoApp.Data;
-using BlazorTodoApp.Models;
+using BlazorTodo.WebUI.Data;
+using BlazorTodo.WebUI.Models;
 
-namespace BlazorTodoApp.Controllers;
+namespace BlazorTodo.WebUI.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]

@@ -1,4 +1,4 @@
-namespace BlazorTodoApp.Models;
+namespace BlazorTodo.WebUI.Models;
 
 public class Country
 {

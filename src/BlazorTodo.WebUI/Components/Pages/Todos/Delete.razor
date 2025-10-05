@@ -1,19 +1,48 @@
 @page "/todos/delete/{Id:int}"
-@inject HttpClient Http
+@using BlazorTodo.WebUI.Data
+@using BlazorTodo.WebUI.Models
+@inject AppDbContext Db
 @inject NavigationManager Nav
 
 <h3>Hapus Todo</h3>
 
-<p>Apakah Anda yakin ingin menghapus todo ini?</p>
-<button @onclick="Delete">Ya</button>
-<button @onclick="() => Nav.NavigateTo("/todos")">Tidak</button>
+@if (todo == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="alert alert-warning">
+        <h4>Apakah yakin ingin menghapus?</h4>
+        <p><strong>@todo.Title</strong></p>
+        <p>@todo.Description</p>
+    </div>
+
+    <button class="btn btn-danger" @onclick="OnDelete">Hapus</button>
+    <button class="btn btn-secondary" @onclick="GoBack">Batal</button>
+}
 
 @code {
     [Parameter] public int Id { get; set; }
+    private Todo? todo;
 
-    private async Task Delete()
+    protected override void OnInitialized()
     {
-        await Http.DeleteAsync($"api/todos/{Id}");
+        todo = Db.Todos.FirstOrDefault(t => t.Id == Id);
+    }
+
+    private void OnDelete()
+    {
+        if (todo != null)
+        {
+            Db.Todos.Remove(todo);
+            Db.SaveChanges();
+            Nav.NavigateTo("/todos");
+        }
+    }
+
+    private void GoBack()
+    {
         Nav.NavigateTo("/todos");
     }
 }

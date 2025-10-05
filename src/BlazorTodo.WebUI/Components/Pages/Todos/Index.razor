@@ -1,27 +1,90 @@
 @page "/todos"
 @inject HttpClient Http
+@inject NavigationManager Nav
 
-<h3>Todo List</h3>
-<a href="/todos/create">Tambah Todo</a>
+<h3>Todos List</h3>
 
-<ul>
-    @foreach (var todo in todos)
-    {
-        <li>
-            <input type="checkbox" checked="@todo.IsDone" disabled />
-            @todo.Title
-            (<a href="/todos/details/@todo.Id">Details</a> |
-             <a href="/todos/edit/@todo.Id">Edit</a> |
-             <a href="/todos/delete/@todo.Id">Delete</a>)
-        </li>
-    }
-</ul>
+<!-- Gunakan preventDefault -->
+<button class="btn btn-success mb-3" @onclick:preventDefault @onclick="GoToCreate">Add Todo</button>
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger">@errorMessage</div>
+}
+
+@if (todos == null)
+{
+    <p>Loading...</p>
+}
+else if (!todos.Any())
+{
+    <p>No todos found.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var todo in todos)
+            {
+                <tr>
+                    <td>@todo.Title</td>
+                    <td>@todo.Description</td>
+                    <td>
+                        @if (todo.IsDone)
+                        {
+                            <span class="badge bg-success">Done</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning">Pending</span>
+                        }
+                    </td>
+                    <td>
+                        <a class="btn btn-info btn-sm" href="/todos/details/@todo.Id">Details</a>
+                        <a class="btn btn-warning btn-sm" href="/todos/edit/@todo.Id">Edit</a>
+                        <a class="btn btn-danger btn-sm" href="/todos/delete/@todo.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
 
 @code {
-    private List<BlazorTodoApp.Models.Todo> todos = new();
+    private List<BlazorTodo.WebUI.Models.Todo>? todos;
+    private string errorMessage = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
-        todos = await Http.GetFromJsonAsync<List<BlazorTodoApp.Models.Todo>>("api/todos") ?? new();
+        await LoadTodos();
+    }
+
+    private async Task LoadTodos()
+    {
+        try
+        {
+            errorMessage = string.Empty;
+            todos = await Http.GetFromJsonAsync<List<BlazorTodo.WebUI.Models.Todo>>("api/todos");
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error loading todos: {ex.Message}";
+            Console.WriteLine(errorMessage);
+            todos = new List<BlazorTodo.WebUI.Models.Todo>();
+        }
+    }
+
+    private void GoToCreate()
+    {
+        Console.WriteLine("Add Todo button clicked!");
+        Nav.NavigateTo("/todos/create");
     }
 }

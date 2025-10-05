@@ -2,18 +2,30 @@
 @inject HttpClient Http
 @inject NavigationManager Nav
 
-<h3>Tambah Country</h3>
+<h3>Create Country</h3>
 
-<input @bind="country.Name" placeholder="Nama negara" />
-<input @bind="country.Code" placeholder="Kode" />
-<button @onclick="Save">Simpan</button>
+<div class="mb-3">
+    <label>Name</label>
+    <input class="form-control" @bind="country.Name" />
+</div>
+<div class="mb-3">
+    <label>Code</label>
+    <input class="form-control" @bind="country.Code" />
+</div>
+<button class="btn btn-primary" @onclick="CreateCountry">Create</button>
+<button class="btn btn-secondary" @onclick="GoBack">Cancel</button>
 
 @code {
-    private BlazorTodoApp.Models.Country country = new();
+    private BlazorTodo.WebUI.Models.Country country = new();
 
-    private async Task Save()
+    private async Task CreateCountry()
     {
         await Http.PostAsJsonAsync("api/countries", country);
+        Nav.NavigateTo("/countries");
+    }
+
+    private void GoBack()
+    {
         Nav.NavigateTo("/countries");
     }
 }

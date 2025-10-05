@@ -2,17 +2,64 @@
 @inject HttpClient Http
 @inject NavigationManager Nav
 
-<h3>Tambah Todo</h3>
+<h3>Create Todo</h3>
 
-<input @bind="todo.Title" placeholder="Judul todo" />
-<button @onclick="Save">Simpan</button>
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger">@errorMessage</div>
+}
+
+<div class="mb-3">
+    <label class="form-label">Title</label>
+    <input class="form-control" @bind="todo.Title" />
+</div>
+<div class="mb-3">
+    <label class="form-label">Description</label>
+    <textarea class="form-control" @bind="todo.Description" rows="3"></textarea>
+</div>
+<div class="mb-3 form-check">
+    <input type="checkbox" class="form-check-input" @bind="todo.IsDone" />
+    <label class="form-check-label">Is Done</label>
+</div>
+
+<!-- Tambahkan preventDefault dan stopPropagation -->
+<button class="btn btn-primary" @onclick="CreateTodo">Create</button>
+<button class="btn btn-secondary" @onclick="GoBack">Cancel</button>
 
 @code {
-    private BlazorTodoApp.Models.Todo todo = new();
+    private BlazorTodo.WebUI.Models.Todo todo = new();
+    private string errorMessage = string.Empty;
 
-    private async Task Save()
+    private async Task CreateTodo()
     {
-        await Http.PostAsJsonAsync("api/todos", todo);
+        try
+        {
+            errorMessage = string.Empty;
+            Console.WriteLine("Create button clicked!");
+            
+            var response = await Http.PostAsJsonAsync("api/todos", todo);
+            
+            if (response.IsSuccessStatusCode)
+            {
+                Console.WriteLine("Todo created successfully!");
+                Nav.NavigateTo("/todos");
+            }
+            else
+            {
+                errorMessage = $"Error: {response.StatusCode}";
+                Console.WriteLine($"Error: {response.StatusCode}");
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Exception: {ex.Message}";
+            Console.WriteLine($"Exception: {ex.Message}");
+        }
+    }
+
+    private void GoBack()
+    {
+        Console.WriteLine("Cancel button clicked!");
         Nav.NavigateTo("/todos");
     }
 }

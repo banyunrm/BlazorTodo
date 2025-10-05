@@ -1,0 +1,9 @@
+@page "/"
+@namespace BlazorTodo.WebUI.Pages
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@using BlazorTodo.WebUI.Components
+@{
+    Layout = "_Layout";
+}
+
+<component type="typeof(BlazorTodo.WebUI.Components.App)" render-mode="ServerPrerendered" />

@@ -10,23 +10,35 @@
 }
 else
 {
-    <input @bind="country.Name" />
-    <input @bind="country.Code" />
-    <button @onclick="Update">Update</button>
+    <div class="mb-3">
+        <label>Name</label>
+        <input class="form-control" @bind="country.Name" />
+    </div>
+    <div class="mb-3">
+        <label>Code</label>
+        <input class="form-control" @bind="country.Code" />
+    </div>
+    <button class="btn btn-primary" @onclick="Update">Update</button>
+    <button class="btn btn-secondary" @onclick="GoBack">Cancel</button>
 }
 
 @code {
     [Parameter] public int Id { get; set; }
-    private BlazorTodoApp.Models.Country? country;
+    private BlazorTodo.WebUI.Models.Country? country;
 
     protected override async Task OnInitializedAsync()
     {
-        country = await Http.GetFromJsonAsync<BlazorTodoApp.Models.Country>($"api/countries/{Id}");
+        country = await Http.GetFromJsonAsync<BlazorTodo.WebUI.Models.Country>($"api/countries/{Id}");
     }
 
     private async Task Update()
     {
         await Http.PutAsJsonAsync($"api/countries/{Id}", country);
+        Nav.NavigateTo("/countries");
+    }
+
+    private void GoBack()
+    {
         Nav.NavigateTo("/countries");
     }
 }

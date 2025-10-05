@@ -2,18 +2,39 @@
 @inject HttpClient Http
 @inject NavigationManager Nav
 
-<h3>Hapus Country</h3>
+<h3>Delete Country</h3>
 
-<p>Apakah Anda yakin ingin menghapus country ini?</p>
-<button @onclick="Delete">Ya</button>
-<button @onclick="() => Nav.NavigateTo("/countries")">Tidak</button>
+@if (country == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div class="alert alert-warning">
+        <h4>Are you sure you want to delete?</h4>
+        <p><strong>@country.Name (@country.Code)</strong></p>
+    </div>
+    <button class="btn btn-danger" @onclick="OnDelete">Delete</button>
+    <button class="btn btn-secondary" @onclick="GoBack">Cancel</button>
+}
 
 @code {
     [Parameter] public int Id { get; set; }
+    private BlazorTodo.WebUI.Models.Country? country;
 
-    private async Task Delete()
+    protected override async Task OnInitializedAsync()
+    {
+        country = await Http.GetFromJsonAsync<BlazorTodo.WebUI.Models.Country>($"api/countries/{Id}");
+    }
+
+    private async Task OnDelete()
     {
         await Http.DeleteAsync($"api/countries/{Id}");
+        Nav.NavigateTo("/countries");
+    }
+
+    private void GoBack()
+    {
         Nav.NavigateTo("/countries");
     }
 }

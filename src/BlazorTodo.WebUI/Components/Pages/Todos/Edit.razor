@@ -10,23 +10,35 @@
 }
 else
 {
-    <input @bind="todo.Title" />
-    <input type="checkbox" @bind="todo.IsDone" /> Done?
-    <button @onclick="Update">Update</button>
+    <div class="mb-3">
+        <label>Title</label>
+        <input class="form-control" @bind="todo.Title" />
+    </div>
+    <div class="mb-3">
+        <label>Is Done</label>
+        <input type="checkbox" @bind="todo.IsDone" />
+    </div>
+    <button class="btn btn-primary" @onclick="Update">Update</button>
+    <button class="btn btn-secondary" @onclick="GoBack">Cancel</button>
 }
 
 @code {
     [Parameter] public int Id { get; set; }
-    private BlazorTodoApp.Models.Todo? todo;
+    private BlazorTodo.WebUI.Models.Todo? todo;
 
     protected override async Task OnInitializedAsync()
     {
-        todo = await Http.GetFromJsonAsync<BlazorTodoApp.Models.Todo>($"api/todos/{Id}");
+        todo = await Http.GetFromJsonAsync<BlazorTodo.WebUI.Models.Todo>($"api/todos/{Id}");
     }
 
     private async Task Update()
     {
         await Http.PutAsJsonAsync($"api/todos/{Id}", todo);
+        Nav.NavigateTo("/todos");
+    }
+
+    private void GoBack()
+    {
         Nav.NavigateTo("/todos");
     }
 }

@@ -5,15 +5,15 @@ using BlazorTodo.WebUI.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Tambahkan SQLite
+// SQLite
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite("Data Source=todo.db"));
 
-// Tambahkan Blazor Server
+// Blazor Server
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
-// Tambahkan HttpClient (untuk Blazor)
+// HttpClient
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<HttpClient>(sp =>
 {
@@ -22,12 +22,12 @@ builder.Services.AddScoped<HttpClient>(sp =>
     return new HttpClient { BaseAddress = new Uri(baseAddress) };
 });
 
-// Tambahkan Controllers (untuk API)
+// Controllers
 builder.Services.AddControllers();
 
 var app = builder.Build();
 
-// Buat database jika belum ada
+// Database 
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();

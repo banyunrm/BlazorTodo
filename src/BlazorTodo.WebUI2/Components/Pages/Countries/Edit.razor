@@ -1,0 +1,47 @@
+@page "/countries/edit/{Id:int}"
+
+<h3>Edit Country</h3>
+
+@if (country == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div class="mb-3">
+        <label>Name</label>
+        <input class="form-control" @bind="country.Name" />
+    </div>
+    <div class="mb-3">
+        <label>Code</label>
+        <input type="number" class="form-control" @bind="country.Code" />
+    </div>
+    <button class="btn btn-primary" @onclick="Update">Update</button>
+    <button class="btn btn-secondary" @onclick="GoBack">Cancel</button>
+}
+
+@code {
+    [Parameter] public int Id { get; set; }
+    private Country? country;
+
+    protected override async Task OnInitializedAsync()
+    {
+        country = await Database.Countries.FindAsync(Id);
+    }
+
+    private async Task Update()
+    {
+        if (country != null)
+        {
+            Database.Countries.Update(country);
+            await Database.SaveChangesAsync();
+        }
+
+        Nav.NavigateTo("/countries");
+    }
+
+    private void GoBack()
+    {
+        Nav.NavigateTo("/countries");
+    }
+}

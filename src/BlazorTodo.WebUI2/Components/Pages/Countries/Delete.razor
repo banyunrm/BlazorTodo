@@ -1,0 +1,44 @@
+@page "/countries/delete/{Id:int}"
+
+<h3>Hapus Country</h3>
+
+@if (country == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="alert alert-warning">
+        <h4>Apakah yakin ingin menghapus?</h4>
+        <p><strong>@country.Name</strong></p>
+        <p>Code: @country.Code</p>
+    </div>
+
+    <button class="btn btn-danger" @onclick="OnDelete">Hapus</button>
+    <button class="btn btn-secondary" @onclick="GoBack">Batal</button>
+}
+
+@code {
+    [Parameter] public int Id { get; set; }
+    private Country? country;
+
+    protected override void OnInitialized()
+    {
+        country = Database.Countries.FirstOrDefault(c => c.Id == Id);
+    }
+
+    private void OnDelete()
+    {
+        if (country != null)
+        {
+            Database.Countries.Remove(country);
+            Database.SaveChanges();
+            Nav.NavigateTo("/countries");
+        }
+    }
+
+    private void GoBack()
+    {
+        Nav.NavigateTo("/countries");
+    }
+}

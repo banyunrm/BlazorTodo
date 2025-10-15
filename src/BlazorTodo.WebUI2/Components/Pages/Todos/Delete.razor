@@ -1,0 +1,44 @@
+@page "/todos/delete/{Id:int}"
+
+<h3>Hapus Todo</h3>
+
+@if (todo == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="alert alert-warning">
+        <h4>Apakah yakin ingin menghapus?</h4>
+        <p><strong>@todo.Title</strong></p>
+        <p>@todo.Description</p>
+    </div>
+
+    <button class="btn btn-danger" @onclick="OnDelete">Hapus</button>
+    <button class="btn btn-secondary" @onclick="GoBack">Batal</button>
+}
+
+@code {
+    [Parameter] public int Id { get; set; }
+    private Todo? todo;
+
+    protected override void OnInitialized()
+    {
+        todo = Database.Todos.FirstOrDefault(t => t.Id == Id);
+    }
+
+    private void OnDelete()
+    {
+        if (todo != null)
+        {
+            Database.Todos.Remove(todo);
+            Database.SaveChanges();
+            Nav.NavigateTo("/todos");
+        }
+    }
+
+    private void GoBack()
+    {
+        Nav.NavigateTo("/todos");
+    }
+}

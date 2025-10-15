@@ -1,0 +1,55 @@
+@page "/countries/create"
+
+<h3>Create Country</h3>
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger">@errorMessage</div>
+}
+
+<div class="mb-3">
+    <label class="form-label">Name</label>
+    <input class="form-control" @bind="country.Name" />
+</div>
+<div class="mb-3">
+    <label class="form-label">Code</label>
+    <input type="number" class="form-control" @bind="country.Code" />
+</div>
+
+<button class="btn btn-primary" @onclick="CreateCountry">Create</button>
+<button class="btn btn-secondary" @onclick="GoBack">Cancel</button>
+
+@code {
+    private Country country = new();
+    private string errorMessage = string.Empty;
+
+    private async Task CreateCountry()
+    {
+        try
+        {
+            errorMessage = string.Empty;
+            Console.WriteLine("Create button clicked!");
+
+            var newCountry = new Country
+            {
+                Name = country.Name,
+                Code = country.Code
+            };
+
+            await Database.Countries.AddAsync(newCountry);
+            await Database.SaveChangesAsync();
+            Nav.NavigateTo("countries");
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Exception: {ex.Message}";
+            Console.WriteLine($"Exception: {ex.Message}");
+        }
+    }
+
+    private void GoBack()
+    {
+        Console.WriteLine("Cancel button clicked!");
+        Nav.NavigateTo("countries");
+    }
+}

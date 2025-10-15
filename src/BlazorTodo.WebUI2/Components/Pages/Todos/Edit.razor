@@ -1,0 +1,47 @@
+@page "/todos/edit/{Id:int}"
+
+<h3>Edit Todo</h3>
+
+@if (todo == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div class="mb-3">
+        <label>Title</label>
+        <input class="form-control" @bind="todo.Title" />
+    </div>
+    <div class="mb-3">
+        <label>Is Done</label>
+        <input type="checkbox" @bind="todo.IsDone" />
+    </div>
+    <button class="btn btn-primary" @onclick="Update">Update</button>
+    <button class="btn btn-secondary" @onclick="GoBack">Cancel</button>
+}
+
+@code {
+    [Parameter] public int Id { get; set; }
+    private Todo? todo;
+
+    protected override async Task OnInitializedAsync()
+    {
+        todo = await Database.Todos.FindAsync(Id);
+    }
+
+    private async Task Update()
+    {
+        if (todo != null)
+        {
+            Database.Todos.Update(todo);
+            await Database.SaveChangesAsync();
+        }
+
+        Nav.NavigateTo("/todos");
+    }
+
+    private void GoBack()
+    {
+        Nav.NavigateTo("/todos");
+    }
+}

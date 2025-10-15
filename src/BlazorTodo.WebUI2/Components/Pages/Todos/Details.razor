@@ -1,0 +1,40 @@
+@page "/todos/details/{Id:int}"
+
+<h3>Todo Details</h3>
+
+@if (todo == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">@todo.Title</h5>
+            <p>
+                <strong>Description:</strong> @todo.Description
+            </p>
+            <p>
+                <strong>Status:</strong>
+                @(todo.IsDone ? "Completed" : "Pending")
+            </p>
+        </div>
+    </div>
+    <button class="btn btn-secondary mt-3" @onclick="GoBack">Back</button>
+}
+
+@code {
+
+    [Parameter] public int Id { get; set; }
+    private Todo? todo;
+
+    protected override async Task OnInitializedAsync()
+    {
+        todo = await Database.Todos.FindAsync(Id);
+    }
+
+    private void GoBack()
+    {
+        Nav.NavigateTo("/todos");
+    }
+}

@@ -1,0 +1,36 @@
+@page "/countries/details/{Id:int}"
+
+<h3>Country Details</h3>
+
+@if (country == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">@country.Name</h5>
+            <p>
+                <strong>Code:</strong> @country.Code
+            </p>
+        </div>
+    </div>
+    <button class="btn btn-secondary mt-3" @onclick="GoBack">Back</button>
+}
+
+@code {
+
+    [Parameter] public int Id { get; set; }
+    private Country? country;
+
+    protected override async Task OnInitializedAsync()
+    {
+        country = await Database.Countries.FindAsync(Id);
+    }
+
+    private void GoBack()
+    {
+        Nav.NavigateTo("/countries");
+    }
+}

@@ -1,44 +1,40 @@
 @page "/todos/delete/{Id:int}"
 
-<h3>Hapus Todo</h3>
+<h3>Delete Todo</h3>
 
 @if (todo == null)
 {
-    <p><em>Loading...</em></p>
+    <MudProgressCircular Indeterminate="true" Color="Color.Primary" />
 }
 else
 {
-    <div class="alert alert-warning">
-        <h4>Apakah yakin ingin menghapus?</h4>
-        <p><strong>@todo.Title</strong></p>
-        <p>@todo.Description</p>
-    </div>
+    <MudAlert Severity="Severity.Warning" Variant="Variant.Filled" Class="mb-3">
+        Are you sure you want to delete this todo?
+        <br /><strong>@todo.Title</strong>
+    </MudAlert>
 
-    <button class="btn btn-danger" @onclick="OnDelete">Hapus</button>
-    <button class="btn btn-secondary" @onclick="GoBack">Batal</button>
+    <MudButton Color="Color.Error" Variant="Variant.Filled" OnClick="DeleteTodo" Class="me-2">Delete</MudButton>
+    <MudButton Color="Color.Secondary" Variant="Variant.Outlined" OnClick="Cancel">Cancel</MudButton>
 }
 
 @code {
     [Parameter] public int Id { get; set; }
     private Todo? todo;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        todo = Database.Todos.FirstOrDefault(t => t.Id == Id);
+        todo = await Database.Todos.FindAsync(Id);
     }
 
-    private void OnDelete()
+    private async Task DeleteTodo()
     {
         if (todo != null)
         {
             Database.Todos.Remove(todo);
-            Database.SaveChanges();
-            Nav.NavigateTo("/todos");
+            await Database.SaveChangesAsync();
         }
-    }
-
-    private void GoBack()
-    {
         Nav.NavigateTo("/todos");
     }
+
+    private void Cancel() => Nav.NavigateTo("/todos");
 }

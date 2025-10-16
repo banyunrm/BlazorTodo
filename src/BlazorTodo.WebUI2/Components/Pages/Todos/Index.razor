@@ -1,65 +1,69 @@
 @page "/todos"
 
-
 <h3>Todos List</h3>
 
-
-<a href="todos/create" class="btn btn-success mb-3">Add Todo</a>
+<a href="todos/create" class="mud-button mud-button-filled mud-button-filled-success mb-3 text-white text-decoration-none px-3 py-2 rounded">
+    Add Todo
+</a>
 
 @if (!string.IsNullOrEmpty(errorMessage))
 {
-    <div class="alert alert-danger">@errorMessage</div>
+    <MudAlert Severity="Severity.Error">@errorMessage</MudAlert>
 }
-
-@if (todos == null)
+else if (todos == null)
 {
-    <p>Loading...</p>
+    <MudProgressCircular Indeterminate="true" Color="Color.Primary" />
 }
 else if (!todos.Any())
 {
-    <p>No todos found.</p>
+    <MudText>No todos found.</MudText>
 }
 else
 {
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Description</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var todo in todos)
-            {
-                <tr>
-                    <td>@todo.Title</td>
-                    <td>@todo.Description</td>
-                    <td>
-                        @if (todo.IsDone)
-                        {
-                            <span class="badge bg-success">Done</span>
-                        }
-                        else
-                        {
-                            <span class="badge bg-warning">Pending</span>
-                        }
-                    </td>
-                    <td>
-                        <a class="btn btn-info btn-sm" href="/todos/details/@todo.Id">Details</a>
-                        <a class="btn btn-warning btn-sm" href="/todos/edit/@todo.Id">Edit</a>
-                        <a class="btn btn-danger btn-sm" href="/todos/delete/@todo.Id">Delete</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <MudTable Items="@todos" Hover="true" Dense="true" Bordered="true" Striped="true">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Todo List</MudText>
+            <MudSpacer />
+            <MudTextField @bind-Value="searchString" Placeholder="Search"
+                          Adornment="Adornment.Start"
+                          AdornmentIcon="@Icons.Material.Filled.Search"
+                          Class="mt-0" />
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh>Title</MudTh>
+            <MudTh>Description</MudTh>
+            <MudTh>Status</MudTh>
+            <MudTh>Actions</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Title">@context.Title</MudTd>
+            <MudTd DataLabel="Description">@context.Description</MudTd>
+            <MudTd DataLabel="Status">
+                @if (@context.IsDone)
+                {
+                    <MudChip T="string" Color="Color.Success" Variant="Variant.Filled">Done</MudChip>
+                }
+                else
+                {
+                    <MudChip T="string" Color="Color.Warning" Variant="Variant.Filled">Pending</MudChip>
+                }
+            </MudTd>
+            <MudTd>
+                <a href="/todos/details/@context.Id" class="mud-button mud-button-filled mud-button-filled-success btn-sm text-white me-1">Details</a>
+                <a href="/todos/edit/@context.Id" class="mud-button mud-button-filled mud-button-filled-warning btn-sm text-white me-1">Edit</a>
+                <a href="/todos/delete/@context.Id" class="mud-button mud-button-filled mud-button-filled-error btn-sm text-white">Delete</a>
+            </MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
 }
 
 @code {
     private List<Todo>? todos;
     private string errorMessage = string.Empty;
+    private string searchString = "";
 
     protected override async Task OnInitializedAsync()
     {
@@ -79,11 +83,5 @@ else
             Console.WriteLine(errorMessage);
             todos = new List<Todo>();
         }
-    }
-
-    private void GoToCreate()
-    {
-        Console.WriteLine("Add Todo button clicked!");
-        Nav.NavigateTo("todos/create");
     }
 }

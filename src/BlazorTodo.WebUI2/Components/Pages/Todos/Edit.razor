@@ -4,20 +4,18 @@
 
 @if (todo == null)
 {
-    <p>Loading...</p>
+    <MudProgressCircular Indeterminate="true" Color="Color.Primary" />
 }
 else
 {
-    <div class="mb-3">
-        <label>Title</label>
-        <input class="form-control" @bind="todo.Title" />
-    </div>
-    <div class="mb-3">
-        <label>Is Done</label>
-        <input type="checkbox" @bind="todo.IsDone" />
-    </div>
-    <button class="btn btn-primary" @onclick="Update">Update</button>
-    <button class="btn btn-secondary" @onclick="GoBack">Cancel</button>
+    <MudPaper Class="p-4" Elevation="2">
+        <MudTextField @bind-Value="todo.Title" Label="Title" Variant="Variant.Outlined" Class="mb-3" />
+        <MudTextField @bind-Value="todo.Description" Label="Description" Variant="Variant.Outlined" Class="mb-3" />
+        <MudCheckBox T="bool" @bind-Checked="todo.IsDone" Label="Is Done?" Class="mb-3" />
+
+        <MudButton Color="Color.Warning" Variant="Variant.Filled" OnClick="UpdateTodo" Class="me-2">Update</MudButton>
+        <MudButton Color="Color.Secondary" Variant="Variant.Outlined" OnClick="Cancel">Cancel</MudButton>
+    </MudPaper>
 }
 
 @code {
@@ -29,18 +27,17 @@ else
         todo = await Database.Todos.FindAsync(Id);
     }
 
-    private async Task Update()
+    private async Task UpdateTodo()
     {
         if (todo != null)
         {
             Database.Todos.Update(todo);
             await Database.SaveChangesAsync();
         }
-
         Nav.NavigateTo("/todos");
     }
 
-    private void GoBack()
+    private void Cancel()
     {
         Nav.NavigateTo("/todos");
     }

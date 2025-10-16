@@ -1,44 +1,40 @@
 @page "/countries/delete/{Id:int}"
 
-<h3>Hapus Country</h3>
+<h3>Delete Country</h3>
 
 @if (country == null)
 {
-    <p><em>Loading...</em></p>
+    <MudProgressCircular Indeterminate="true" Color="Color.Primary" />
 }
 else
 {
-    <div class="alert alert-warning">
-        <h4>Apakah yakin ingin menghapus?</h4>
-        <p><strong>@country.Name</strong></p>
-        <p>Code: @country.Code</p>
-    </div>
+    <MudAlert Severity="Severity.Warning" Variant="Variant.Filled" Class="mb-3">
+        Are you sure you want to delete this country?
+        <br /><strong>@country.Name</strong> (Code: @country.Code)
+    </MudAlert>
 
-    <button class="btn btn-danger" @onclick="OnDelete">Hapus</button>
-    <button class="btn btn-secondary" @onclick="GoBack">Batal</button>
+    <MudButton Color="Color.Error" Variant="Variant.Filled" OnClick="DeleteCountry" Class="me-2">Delete</MudButton>
+    <MudButton Color="Color.Secondary" Variant="Variant.Outlined" OnClick="Cancel">Cancel</MudButton>
 }
 
 @code {
     [Parameter] public int Id { get; set; }
     private Country? country;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        country = Database.Countries.FirstOrDefault(c => c.Id == Id);
+        country = await Database.Countries.FindAsync(Id);
     }
 
-    private void OnDelete()
+    private async Task DeleteCountry()
     {
         if (country != null)
         {
             Database.Countries.Remove(country);
-            Database.SaveChanges();
-            Nav.NavigateTo("/countries");
+            await Database.SaveChangesAsync();
         }
-    }
-
-    private void GoBack()
-    {
         Nav.NavigateTo("/countries");
     }
+
+    private void Cancel() => Nav.NavigateTo("/countries");
 }

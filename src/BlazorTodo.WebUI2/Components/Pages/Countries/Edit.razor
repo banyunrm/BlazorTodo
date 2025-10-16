@@ -4,20 +4,17 @@
 
 @if (country == null)
 {
-    <p>Loading...</p>
+    <MudProgressCircular Indeterminate="true" Color="Color.Primary" />
 }
 else
 {
-    <div class="mb-3">
-        <label>Name</label>
-        <input class="form-control" @bind="country.Name" />
-    </div>
-    <div class="mb-3">
-        <label>Code</label>
-        <input type="number" class="form-control" @bind="country.Code" />
-    </div>
-    <button class="btn btn-primary" @onclick="Update">Update</button>
-    <button class="btn btn-secondary" @onclick="GoBack">Cancel</button>
+    <MudPaper Class="p-4" Elevation="2">
+        <MudTextField @bind-Value="country.Name" Label="Name" Variant="Variant.Outlined" Class="mb-3" />
+        <MudNumericField @bind-Value="country.Code" Label="Code" Variant="Variant.Outlined" Class="mb-3" />
+
+        <MudButton Color="Color.Warning" Variant="Variant.Filled" OnClick="UpdateCountry" Class="me-2">Update</MudButton>
+        <MudButton Color="Color.Secondary" Variant="Variant.Outlined" OnClick="Cancel">Cancel</MudButton>
+    </MudPaper>
 }
 
 @code {
@@ -29,19 +26,15 @@ else
         country = await Database.Countries.FindAsync(Id);
     }
 
-    private async Task Update()
+    private async Task UpdateCountry()
     {
         if (country != null)
         {
             Database.Countries.Update(country);
             await Database.SaveChangesAsync();
         }
-
         Nav.NavigateTo("/countries");
     }
 
-    private void GoBack()
-    {
-        Nav.NavigateTo("/countries");
-    }
+    private void Cancel() => Nav.NavigateTo("/countries");
 }

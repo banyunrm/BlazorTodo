@@ -4,23 +4,20 @@
 
 @if (country == null)
 {
-    <p>Loading...</p>
+    <MudProgressCircular Indeterminate="true" Color="Color.Primary" />
 }
 else
 {
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">@country.Name</h5>
-            <p>
-                <strong>Code:</strong> @country.Code
-            </p>
-        </div>
-    </div>
-    <button class="btn btn-secondary mt-3" @onclick="GoBack">Back</button>
+    <MudPaper Class="p-4" Elevation="2">
+        <MudText Typo="Typo.h6">@country.Name</MudText>
+        <MudText><b>Code:</b> @country.Code</MudText>
+
+        <MudDivider Class="my-3" />
+        <MudButton Color="Color.Secondary" Variant="Variant.Outlined" OnClick="Back">Back</MudButton>
+    </MudPaper>
 }
 
 @code {
-
     [Parameter] public int Id { get; set; }
     private Country? country;
 
@@ -29,8 +26,5 @@ else
         country = await Database.Countries.FindAsync(Id);
     }
 
-    private void GoBack()
-    {
-        Nav.NavigateTo("/countries");
-    }
+    private void Back() => Nav.NavigateTo("/countries");
 }

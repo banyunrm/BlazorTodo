@@ -1,59 +1,28 @@
 @page "/todos/create"
 
-<h3>Create Todo</h3>
+<h3>Add New Todo</h3>
 
-@if (!string.IsNullOrEmpty(errorMessage))
-{
-    <div class="alert alert-danger">@errorMessage</div>
-}
+<MudPaper Class="p-4" Elevation="2">
+    <MudTextField @bind-Value="todo.Title" Label="Title" Variant="Variant.Outlined" Class="mb-3" />
+    <MudTextField @bind-Value="todo.Description" Label="Description" Variant="Variant.Outlined" Class="mb-3" />
+    <MudCheckBox T="bool" @bind-Checked="todo.IsDone" Label="Is Done?" Class="mb-3" />
 
-<div class="mb-3">
-    <label class="form-label">Title</label>
-    <input class="form-control" @bind="todo.Title" />
-</div>
-<div class="mb-3">
-    <label class="form-label">Description</label>
-    <textarea class="form-control" @bind="todo.Description" rows="3"></textarea>
-</div>
-<div class="mb-3 form-check">
-    <input type="checkbox" class="form-check-input" @bind="todo.IsDone" />
-    <label class="form-check-label">Is Done</label>
-</div>
-
-<!-- Tambahkan preventDefault dan stopPropagation -->
-<button class="btn btn-primary" @onclick="CreateTodo">Create</button>
-<button class="btn btn-secondary" @onclick="GoBack">Cancel</button>
+    <MudButton Color="Color.Success" Variant="Variant.Filled" OnClick="SaveTodo" Class="me-2">Save</MudButton>
+    <MudButton Color="Color.Secondary" Variant="Variant.Outlined" OnClick="Cancel">Cancel</MudButton>
+</MudPaper>
 
 @code {
     private Todo todo = new();
-    private string errorMessage = string.Empty;
 
-    private async Task CreateTodo()
+    private async Task SaveTodo()
     {
-        try
-        {
-            errorMessage = string.Empty;
-            Console.WriteLine("Create button clicked!");
-            var todo2 = new Todo
-            {
-                Title = todo.Title,
-                Description = todo.Description,
-                IsDone = todo.IsDone
-            };
-            await Database.Todos.AddAsync(todo2);
-            await Database.SaveChangesAsync();
-            Nav.NavigateTo("todos");
-        }
-        catch (Exception ex)
-        {
-            errorMessage = $"Exception: {ex.Message}";
-            Console.WriteLine($"Exception: {ex.Message}");
-        }
+        Database.Todos.Add(todo);
+        await Database.SaveChangesAsync();
+        Nav.NavigateTo("/todos");
     }
 
-    private void GoBack()
+    private void Cancel()
     {
-        Console.WriteLine("Cancel button clicked!");
-        Nav.NavigateTo("todos");
+        Nav.NavigateTo("/todos");
     }
 }

@@ -1,52 +1,58 @@
 @page "/countries"
 
-<h3>Countries List</h3>
+<h2>Countries List</h2>
 
-<a href="countries/create" class="btn btn-success mb-3">Add Country</a>
+<a href="countries/create" class="mud-button mud-button-filled mud-button-filled-success mb-3 text-white text-decoration-none px-3 py-2 rounded">
+    Add Country
+</a>
 
 @if (!string.IsNullOrEmpty(errorMessage))
 {
-    <div class="alert alert-danger">@errorMessage</div>
+    <MudAlert Severity="Severity.Error">@errorMessage</MudAlert>
 }
-
-@if (countries == null)
+else if (countries == null)
 {
-    <p>Loading...</p>
+    <MudProgressCircular Indeterminate="true" Color="Color.Primary" />
 }
 else if (!countries.Any())
 {
-    <p>No countries found.</p>
+    <MudText>No countries found.</MudText>
 }
 else
 {
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Code</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var country in countries)
-            {
-                <tr>
-                    <td>@country.Name</td>
-                    <td>@country.Code</td>
-                    <td>
-                        <a class="btn btn-info btn-sm" href="/countries/details/@country.Id">Details</a>
-                        <a class="btn btn-warning btn-sm" href="/countries/edit/@country.Id">Edit</a>
-                        <a class="btn btn-danger btn-sm" href="/countries/delete/@country.Id">Delete</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <MudTable Items="@countries" Hover="true" Dense="true" Bordered="true" Striped="true">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Country List</MudText>
+            <MudSpacer />
+            <MudTextField @bind-Value="searchString" Placeholder="Search"
+                          Adornment="Adornment.Start"
+                          AdornmentIcon="@Icons.Material.Filled.Search"
+                          Class="mt-0" />
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh>Name</MudTh>
+            <MudTh>Code</MudTh>
+            <MudTh>Actions</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Name">@context.Name</MudTd>
+            <MudTd DataLabel="Code">@context.Code</MudTd>
+            <MudTd>
+                <a href="/countries/details/@context.Id" class="mud-button mud-button-filled mud-button-filled-success btn-sm text-white me-1">Details</a>
+                <a href="/countries/edit/@context.Id" class="mud-button mud-button-filled mud-button-filled-warning btn-sm text-white me-1">Edit</a>
+                <a href="/countries/delete/@context.Id" class="mud-button mud-button-filled mud-button-filled-error btn-sm text-white">Delete</a>
+            </MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
 }
 
 @code {
     private List<Country>? countries;
     private string errorMessage = string.Empty;
+    private string searchString = "";
 
     protected override async Task OnInitializedAsync()
     {

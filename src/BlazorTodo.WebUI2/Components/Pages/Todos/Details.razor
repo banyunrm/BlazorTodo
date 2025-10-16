@@ -1,24 +1,37 @@
 @page "/todos/details/{Id:int}"
 
-<h3>Todo Details</h3>
+<MudContainer MaxWidth="MaxWidth.Medium" Class="mt-6">
+    <h3 class="mb-4">Todo Details</h3>
 
-@if (todo == null)
-{
-    <MudProgressCircular Indeterminate="true" Color="Color.Primary" />
-}
-else
-{
-    <MudPaper Class="p-4" Elevation="2">
-        <MudText Typo="Typo.h6">@todo.Title</MudText>
-        <MudText>@todo.Description</MudText>
-        <MudChip T="string" Color="@(todo.IsDone ? Color.Success : Color.Warning)">
-            @(todo.IsDone ? "Done" : "Pending")
-        </MudChip>
+    @if (todo == null)
+    {
+        <MudProgressCircular Indeterminate="true" Color="Color.Primary" />
+    }
+    else
+    {
+        <MudPaper Class="pa-6" Elevation="3">
+            <MudText Typo="Typo.h5" Class="mb-4">@todo.Title</MudText>
+            
+            <MudText Class="mb-4">@todo.Description</MudText>
+            
+            <MudChip T="string" Color="@(todo.IsDone ? Color.Success : Color.Warning)" 
+                    Variant="Variant.Filled" Class="mb-4">
+                @(todo.IsDone ? "Done" : "Pending")
+            </MudChip>
 
-        <MudDivider Class="my-3" />
-        <MudButton Color="Color.Secondary" Variant="Variant.Outlined" OnClick="Back">Back</MudButton>
-    </MudPaper>
-}
+            <MudDivider Class="my-4" />
+            
+            <div class="d-flex justify-start mt-4">
+                <MudButton Color="Color.Secondary" 
+                          Variant="Variant.Filled" 
+                          Size="Size.Medium"
+                          OnClick="Back">
+                    Back 
+                </MudButton>
+            </div>
+        </MudPaper>
+    }
+</MudContainer>
 
 @code {
     [Parameter] public int Id { get; set; }

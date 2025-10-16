@@ -1,21 +1,35 @@
 @page "/countries/edit/{Id:int}"
+@using Microsoft.EntityFrameworkCore
 
-<h3>Edit Country</h3>
+<MudContainer MaxWidth="MaxWidth.Medium" Class="mt-6">
+    <h3 class="mb-4">Edit Country</h3>
 
-@if (country == null)
-{
-    <MudProgressCircular Indeterminate="true" Color="Color.Primary" />
-}
-else
-{
-    <MudPaper Class="p-4" Elevation="2">
-        <MudTextField @bind-Value="country.Name" Label="Name" Variant="Variant.Outlined" Class="mb-3" />
-        <MudNumericField @bind-Value="country.Code" Label="Code" Variant="Variant.Outlined" Class="mb-3" />
+    @if (country == null)
+    {
+        <MudProgressCircular Indeterminate="true" Color="Color.Primary" />
+    }
+    else
+    {
+        <MudPaper Class="pa-6" Elevation="3">
+            <MudTextField @bind-Value="country.Name" Label="Name" Variant="Variant.Outlined" Class="mb-4" />
+            <MudNumericField @bind-Value="country.Code" Label="Code" Variant="Variant.Outlined" Class="mb-4" />
 
-        <MudButton Color="Color.Warning" Variant="Variant.Filled" OnClick="UpdateCountry" Class="me-2">Update</MudButton>
-        <MudButton Color="Color.Secondary" Variant="Variant.Outlined" OnClick="Cancel">Cancel</MudButton>
-    </MudPaper>
-}
+            <MudDivider Class="my-4" />
+            
+            <div class="d-flex justify-start mt-4">
+                <MudButton Color="Color.Warning" 
+                          Variant="Variant.Filled" 
+                          Size="Size.Medium"
+                          OnClick="UpdateCountry" 
+                          Class="me-3">Update</MudButton>
+                <MudButton Color="Color.Secondary" 
+                          Variant="Variant.Outlined" 
+                          Size="Size.Medium"
+                          OnClick="Cancel">Cancel</MudButton>
+            </div>
+        </MudPaper>
+    }
+</MudContainer>
 
 @code {
     [Parameter] public int Id { get; set; }
@@ -30,7 +44,7 @@ else
     {
         if (country != null)
         {
-            Database.Countries.Update(country);
+            Database.Entry(country).State = EntityState.Modified;
             await Database.SaveChangesAsync();
         }
         Nav.NavigateTo("/countries");

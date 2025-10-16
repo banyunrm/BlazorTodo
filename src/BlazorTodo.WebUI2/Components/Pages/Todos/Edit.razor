@@ -1,22 +1,37 @@
 @page "/todos/edit/{Id:int}"
+@using Microsoft.EntityFrameworkCore
 
-<h3>Edit Todo</h3>
+<MudContainer MaxWidth="MaxWidth.Medium" Class="mt-6">
+    <h3 class="mb-4">Edit Todo</h3>
 
-@if (todo == null)
-{
-    <MudProgressCircular Indeterminate="true" Color="Color.Primary" />
-}
-else
-{
-    <MudPaper Class="p-4" Elevation="2">
-        <MudTextField @bind-Value="todo.Title" Label="Title" Variant="Variant.Outlined" Class="mb-3" />
-        <MudTextField @bind-Value="todo.Description" Label="Description" Variant="Variant.Outlined" Class="mb-3" />
-        <MudCheckBox T="bool" @bind-Checked="todo.IsDone" Label="Is Done?" Class="mb-3" />
+    @if (todo == null)
+    {
+        <MudProgressCircular Indeterminate="true" Color="Color.Primary" />
+    }
+    else
+    {
+        <MudPaper Class="pa-6" Elevation="3">
+            <MudTextField @bind-Value="todo.Title" Label="Title" Variant="Variant.Outlined" Class="mb-4" />
+            <MudTextField @bind-Value="todo.Description" Label="Description" Variant="Variant.Outlined" Class="mb-4" />
+            
+            <MudCheckBox T="bool" @bind-Checked="todo.IsDone" Label="Is Done?" Class="mb-4" Color="Color.Primary" />
 
-        <MudButton Color="Color.Warning" Variant="Variant.Filled" OnClick="UpdateTodo" Class="me-2">Update</MudButton>
-        <MudButton Color="Color.Secondary" Variant="Variant.Outlined" OnClick="Cancel">Cancel</MudButton>
-    </MudPaper>
-}
+            <MudDivider Class="my-4" />
+            
+            <div class="d-flex justify-start mt-4">
+                <MudButton Color="Color.Warning" 
+                          Variant="Variant.Filled" 
+                          Size="Size.Medium"
+                          OnClick="UpdateTodo" 
+                          Class="me-3">Update</MudButton>
+                <MudButton Color="Color.Secondary" 
+                          Variant="Variant.Outlined" 
+                          Size="Size.Medium"
+                          OnClick="Cancel">Cancel</MudButton>
+            </div>
+        </MudPaper>
+    }
+</MudContainer>
 
 @code {
     [Parameter] public int Id { get; set; }
@@ -31,7 +46,7 @@ else
     {
         if (todo != null)
         {
-            Database.Todos.Update(todo);
+            Database.Entry(todo).State = EntityState.Modified;
             await Database.SaveChangesAsync();
         }
         Nav.NavigateTo("/todos");

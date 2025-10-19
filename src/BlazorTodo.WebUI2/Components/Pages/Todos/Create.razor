@@ -5,7 +5,7 @@
 <MudPaper Class="p-4" Elevation="2">
     <MudTextField @bind-Value="todo.Title" Label="Title" Variant="Variant.Outlined" Class="mb-3" />
     <MudTextField @bind-Value="todo.Description" Label="Description" Variant="Variant.Outlined" Class="mb-3" />
-    <MudCheckBox T="bool" @bind-Checked="todo.IsDone" Label="Is Done?" Class="mb-3" />
+    <MudCheckBox T="bool" @bind-Value="todo.IsDone" Label="Is Done?" Class="mb-3" />
 
     <MudButton Color="Color.Success" Variant="Variant.Filled" OnClick="SaveTodo" Class="me-2">Save</MudButton>
     <MudButton Color="Color.Secondary" Variant="Variant.Outlined" OnClick="Cancel">Cancel</MudButton>

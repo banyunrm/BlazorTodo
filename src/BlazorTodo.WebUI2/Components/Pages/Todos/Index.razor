@@ -81,6 +81,11 @@
         await LoadTodos();
     }
 
+    protected override async Task OnParametersSetAsync()
+    {
+        await LoadTodos();
+    }
+
     private async Task LoadTodos()
     {
         try
